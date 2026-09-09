@@ -7,7 +7,7 @@ const trips = [
         departureTime: "07:30",
         arrivalTime: "08:30",
         price: 25,
-        availableSeats: 50
+        availableSeats: 2
     },
     {
         id: 2,
@@ -181,7 +181,9 @@ const trips = [
         availableSeats: 50
     }
 ];
+const annulationplace =[];
 const ticket_acheter = [];
+let idglobal = 1;
 //MENU
 function menu(){
 
@@ -220,15 +222,29 @@ function acheter(){
                 idtrajet : Number(prompt("Identifiant du trajet : ")),
         }
         let found = false;
+        let foundplace = false;
         for(let trip in trips)
         {
             if(trips[trip].id === billet.idtrajet){
+
                 found = true;
                 if(trips[trip].availableSeats !== 0)
                 { 
                     trips[trip].availableSeats -= 1;
-                    billet.id = ticket_acheter.length + 1;
-                    billet.seatnumber = 50 - trips[trip].availableSeats;
+                    for(let i = 0;i<annulationplace.length;i++)//looping f array kol object
+                    {
+                        if(billet.idtrajet in annulationplace[i])//checking kol object wash howa number dyal dak traject 
+                        {
+                            foundplace = true;
+                            billet.seatnumber = annulationplace[i][billet.idtrajet].placeannuler;//la lqinah ka n3tiw dik place li asssigned lih lnew place lnew user 
+                            annulationplace.splice(i,1);  
+                            break;                      
+                        }
+                    }
+                    if(!foundplace)
+                        billet.seatnumber = 50 - trips[trip].availableSeats;//sinon ka nkmlo eady
+
+                    billet.id = idglobal++;
                     billet.price = trips[trip].price;
                     billet.destination = trips[trip].destination;
                     billet.departure = trips[trip].departure;
@@ -276,17 +292,25 @@ function affticket(){
 }
 function annulation(){
     let id_ticket = Number(prompt("Identifiant du ticket : "));
-    let found;
-    for(let i = 0;i<ticket_acheter.length;i++)
+    let found = false;
+    for(let i = 0;i<ticket_acheter.length;i++)//loop ticket
     {
+
         if(ticket_acheter[i].id === id_ticket)
         {
+
             let indx = i;
-            for(let trip in trips)
+            for(let trip in trips)//loop trips
             {
+
                 if(trips[trip].id === ticket_acheter[i].idtrajet)
                 {
                     trips[trip].availableSeats += 1;
+
+                    annulationplace.push({[ticket_acheter[i].idtrajet]: {
+                        placeannuler: ticket_acheter[i].seatnumber
+                        }});//7tit place number fobject li msmi 3la idtraject.
+
                 }
             }
             let arr = [];
@@ -359,27 +383,58 @@ function filter(){
     }
 }
 function triage(){
-    let exptrips=[];
-    for(let trip in trips)
+    console.log("   1/trier par ordre croissant.");
+    console.log("   2/trier par ordre decroissant.");
+    let choose = Number(prompt("Choix > "));
+    if(choose === 2)
     {
-        exptrips[trip] = trips[trip];
-    }
-    for(let i = 0;i<exptrips.length - 1;i++)
-    {
-        for(let j = 0;j<exptrips.length - 1 - i;j++)
+        let exptrips=[];
+        for(let trip in trips)
         {
-            if(exptrips[j].price < exptrips[j + 1].price)
+            exptrips[trip] = trips[trip];
+        }
+        for(let i = 0;i<exptrips.length - 1;i++)
+        {
+            for(let j = 0;j<exptrips.length - 1 - i;j++)
             {
-                let tmp = exptrips[j];
-                exptrips[j] = exptrips[j+1];
-                exptrips[j+1] = tmp;
+                if(exptrips[j].price < exptrips[j + 1].price)
+                {
+                    let tmp = exptrips[j];
+                    exptrips[j] = exptrips[j+1];
+                    exptrips[j+1] = tmp;
+                }
             }
         }
+        for(let i = 0; i < exptrips.length; i++)
+        {
+            console.log("#" + exptrips[i].id + " " + exptrips[i].departure + " → " + exptrips[i].destination + " : " + exptrips[i].price + " DH");
+        }
     }
-    for(let i = 0; i < exptrips.length; i++)
+    else if(choose === 1)
     {
-        console.log("#" + exptrips[i].id + " " + exptrips[i].departure + " → " + exptrips[i].destination + " : " + exptrips[i].price + " DH");
+        let exptrips=[];
+        for(let trip in trips)
+        {
+            exptrips[trip] = trips[trip];
+        }
+        for(let i = 0;i<exptrips.length - 1;i++)
+        {
+            for(let j = 0;j<exptrips.length - 1 - i;j++)
+            {
+                if(exptrips[j].price >  exptrips[j + 1].price)
+                {
+                    let tmp = exptrips[j];
+                    exptrips[j] = exptrips[j+1];
+                    exptrips[j+1] = tmp;
+                }
+            }
+        }
+        for(let i = 0; i < exptrips.length; i++)
+        {
+            console.log("#" + exptrips[i].id + " " + exptrips[i].departure + " → " + exptrips[i].destination + " : " + exptrips[i].price + " DH");
+        }
     }
+    
 }
 function sum()
 {
@@ -398,8 +453,8 @@ function chiffreaff()
 function trajet()
 {   
     let min = trips[0].availableSeats;
-    let dst;
-    let dpt;
+    let dst = trips[0].destination;
+    let dpt = trips[0].departure;
     for(let trip in trips)
     {
         if(trips[trip].availableSeats < min)
