@@ -268,6 +268,38 @@ function acheter(){
         }
         console.log();
 }
+function acheter()
+{
+    let found = false;
+    let foundan = false;
+    const bille = {
+        nom : prompt("nom passager : "),
+        idtrajet : Number(prompt("identifiant du trajet : ")),
+    }
+    for(let trip in trips)
+    {
+        if(trips[trip].id == bille.idtrajet)
+        {
+            found = true;
+            if(trips[trip].availableSeats != 0)
+            {
+                trips[trip].availableSeats -=  1;
+                for(let i = 0;i < annulationplace.length;i++)
+                {
+                    if(bille.idtrajet in annulationplace[i])
+                    {
+                        foundan = true;
+                        bille.place = annulationplace[i][bille.idtrajet].placenumber;
+                        annulationplace.splice(i,1);
+                        break;
+                    }
+                }
+                if(!foundan)
+                    bille.place = 50 - trips[trip].availableSeats
+            }
+        }
+    }
+}
 function affticket(){
     console.log("=== TICKETS ===");
     console.log();
