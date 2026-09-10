@@ -181,11 +181,11 @@ const trips = [
         availableSeats: 50
     }
 ];
+let idglobal = 1;
 const annulationplace =[];
 const ticket_acheter = [];
 //MENU
 function menu(){
-
     console.log("=======================================");
     console.log("");
     console.log("RAILWAY MANAGER");
@@ -207,6 +207,7 @@ function menu(){
 function aff(){
     for(let trip in trips)
     {
+        console.log("=========trajet==========");
         console.log("#"+ trips[trip].id +" "+ trips[trip].departure + " → " + trips[trip].destination);
         console.log("Départ : " + trips[trip].departureTime);
         console.log("Arrivée : " + trips[trip].arrivalTime);
@@ -216,6 +217,9 @@ function aff(){
     }
 }
 function acheter(){
+        console.log("=====================================");
+        console.log("=========L'achat d'un ticket=========");
+        console.log("=====================================");
         const billet = {
                 nom : prompt("Nom du passager : "),
                 idtrajet : Number(prompt("Identifiant du trajet : ")),
@@ -243,18 +247,21 @@ function acheter(){
                     if(!foundplace)
                         billet.seatnumber = 50 - trips[trip].availableSeats;//sinon ka nkmlo eady
 
-                    billet.id = ticket_acheter.length + 1;
+                    billet.id = idglobal++;
                     billet.price = trips[trip].price;
                     billet.destination = trips[trip].destination;
                     billet.departure = trips[trip].departure;
-                    console.log("Ticket acheté avec succès.");
                     ticket_acheter[ticket_acheter.length]= billet;
+
+                    console.log("Ticket acheté avec succès.");
+                    console.log("==========Information de ticket ===========");
                     console.log();
                     console.log("Ticket #"+billet.id);
                     console.log("Passager : " + billet.nom);
                     console.log("tripId : "+ billet.idtrajet);
                     console.log("seat Number : " + billet.seatnumber);
                     console.log("price : "+ billet.price);
+                    console.log();
                 }
                 else
                 {
@@ -403,7 +410,9 @@ function triage(){
 }
 function sum()
 {
+    console.log("===============Nombre de ticket vendue============");
     console.log("Nombre total des tickets est "+ticket_acheter.length);
+    console.log("================================");
     console.log();
 }
 function chiffreaff()
@@ -416,23 +425,34 @@ function chiffreaff()
     console.log("Chiffre d'affaires total : "+ sum);
 }
 function trajet()
-{   
-    let min = trips[0].availableSeats;
-    let dst;
-    let dpt;
-    for(let trip in trips)
+{   if(ticket_acheter.length === 0)
     {
-        if(trips[trip].availableSeats < min)
-        {
-            min = trips[trip].availableSeats;
-            dst = trips[trip].destination;
-            dpt = trips[trip].departure;
-        }
+        console.log("================================");
+        console.log("Aucun ticket n'est encore vendu.");
+        console.log("================================");
+        console.log();
     }
-    console.log("le trajet le plus vendu :");
-    console.log(dpt + " → " + dst);
-    console.log(50 - min + "ticket vendu.");
-    console.log();
+    else
+    {
+        let min = trips[0].availableSeats;
+        let dst = trips[0].destination;
+        let dpt = trips[0].departure;
+        for(let trip in trips)
+        {
+            if(trips[trip].availableSeats < min)
+            {
+                min = trips[trip].availableSeats;
+                dst = trips[trip].destination;
+                dpt = trips[trip].departure;
+            }
+        }
+        console.log("========================");
+        console.log("le trajet le plus vendu :");
+        console.log(dpt + " → " + dst);
+        console.log(50 - min + "ticket vendu.");
+        console.log();
+    }
+    
 }
 //the loop
 while(1)
@@ -473,5 +493,7 @@ while(1)
         case 0:
             console.log("Au revoir");
             return;
+        default: 
+            console.log("Option non valide");
     }
 }
