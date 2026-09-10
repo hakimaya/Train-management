@@ -7,7 +7,7 @@ const trips = [
         departureTime: "07:30",
         arrivalTime: "08:30",
         price: 25,
-        availableSeats: 50
+        availableSeats: 47
     },
     {
         id: 2,
@@ -16,7 +16,7 @@ const trips = [
         departureTime: "08:00",
         arrivalTime: "10:30",
         price: 90,
-        availableSeats: 50
+        availableSeats: 48
     },
     {
         id: 3,
@@ -183,7 +183,12 @@ const trips = [
 ];
 let idglobal = 1;
 const annulationplace =[];
-const ticket_acheter = [];
+const ticket_acheter = [{ nom: "Yassine", idtrajet: 1, id: 1, seatnumber: 1, price: 25, destination: "Youssoufia", departure: "Safi" },
+    { nom: "Salma",   idtrajet: 1, id: 2, seatnumber: 2, price: 25, destination: "Youssoufia", departure: "Safi" },
+    { nom: "Karim",   idtrajet: 1, id: 3, seatnumber: 3, price: 25, destination: "Youssoufia", departure: "Safi" },
+    { nom: "Aya",     idtrajet: 2, id: 4, seatnumber: 1, price: 90, destination: "Marrakech",  departure: "Safi" },
+    { nom: "Hamza",   idtrajet: 2, id: 5, seatnumber: 2, price: 90, destination: "Marrakech",  departure: "Safi" }
+];
 //MENU
 function menu(){
     console.log("=======================================");
@@ -344,11 +349,11 @@ function annulation(){
     
 }
 function chercher(){
-    let nomchercher = prompt("Nom du passager : ");
+    let nomchercher = prompt("Nom du passager : ").toLowerCase();
     let found ;
     for(let i = 0;i<ticket_acheter.length;i++)
     {
-        if(ticket_acheter[i].nom === nomchercher)
+        if(ticket_acheter[i].nom.toLowerCase() === nomchercher)
         {
             found = true;
             console.log("Ticket #" + ticket_acheter[i].id);
@@ -367,11 +372,11 @@ function chercher(){
         }
 }
 function filter(){
-    let villechercher = prompt("Ville de depart :");
+    let villechercher = prompt("Ville de depart :").toLowerCase();
     let found = false;
     for(let trip in trips)
     {
-        if(trips[trip].departure === villechercher)
+        if(trips[trip].departure.toLowerCase === villechercher)
         {
             found = true;
             console.log("Resultat :")
